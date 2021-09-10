@@ -15,12 +15,15 @@ index = {"get_bundle_as_raw_json": "00_core.ipynb",
          "filter_bundle": "10_per_patient.ipynb",
          "medication_status_filter": "10_per_patient.ipynb",
          "do_not_perform_filter": "10_per_patient.ipynb",
-         "get_single_patient_medication_bundle": "50_web_app.ipynb",
-         "create_app": "50_web_app.ipynb"}
+         "get_single_patient_medication_bundle": "50a_web_demo.ipynb",
+         "create_app": "50_web_app.ipynb",
+         "bp": "50a_web_demo.ipynb",
+         "index": "50a_web_demo.ipynb"}
 
 modules = ["core.py",
            "per_patient.py",
-           "web/app.py"]
+           "web/app.py",
+           "web/demo.py"]
 
 doc_url = "https://pete88b.github.io/vulcan_medication_bundle/"
 

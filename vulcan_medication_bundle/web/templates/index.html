@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Demo{% endblock %}
+
+{% block content %}
+  <form action="{{ url_for('demo.index') }}" method="post" autocomplete="off">
+    <input name="api_base" id="api_base" value="{{ request.form['api_base'] }}"
+           placeholder="Start with a FHIR server URL. e.g. http://hapi.fhir.org/baseR4" required autofocus>
+    <input name="subject" id="subject" value="{{ request.form['subject'] }}"
+           placeholder="and a subject (patient ID). e.g. 0c4a1143-8d1c-42ed-b509-eac97d77c9b2" required>
+    <input type="submit" value="Get medication bundle" class="main-submit">
+  </form>
+  
+  <hr>
+  <article class="post">
+      <header>
+      <div>
+        <h1><a title="Click to edit this entry">p title</a></h1>
+        <div class="about">by blah on blue</div>
+      </div>
+      </header>
+      <p class="body">{{ medication_bundle | safe }}</p>
+  </article>
+
+  <hr>
+  <div class="content-right">
+    <a title="Click to download all posts">Download Posts</a>
+  </div>
+  <script src="{{ url_for('static', filename='index.js') }}"></script>
+{% endblock %}

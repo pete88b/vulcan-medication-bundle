@@ -47,4 +47,10 @@ def create_app(test_config=None):
             abort(400, 'Missing URL parameter: api_base and subject are required')
         return get_single_patient_medication_bundle(*args)
 
+    from . import demo
+    # apply the blueprints to the app
+    app.register_blueprint(demo.bp)
+
+    app.add_url_rule("/", endpoint="index")
+
     return app
