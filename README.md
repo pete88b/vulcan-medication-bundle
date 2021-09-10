@@ -14,7 +14,7 @@ Note: No installation is needed to use the web API but ... if you'd like to use 
 
 We have an Azure app service that can be used to test this API.
 
-The API is available at: http://vulcan-medication-bundle.azurewebsites.net/single_patient_medication_bundle and required 2 URL parameters;
+The API is available at: http://vulcan-medication-bundle.azurewebsites.net/single_patient_medication_bundle and requires 2 URL parameters;
 - `api_base` base URL for an "open" FHIR server
 - `subject` ID of a patient that should exist on the specified FHIR server
 
