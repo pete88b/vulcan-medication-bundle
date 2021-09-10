@@ -1,0 +1,8 @@
+{
+  "vulcan_medication_bundle": {
+    "Overview": "/",
+    "Core": "core.html",
+    "Per-Patient": "per_patient.html",
+    "Web App": "web_app.html"
+  }
+}
