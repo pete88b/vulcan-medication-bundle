@@ -8,21 +8,24 @@ import requests
 from datetime import datetime, timezone
 
 # Cell
-def get_bundle_as_raw_json(api_base, resource_type, url_suffix=None):
-    "GET a bundle of resources of a specific type"
+def get_bundle_as_raw_json(api_base, resource_type=None, url_suffix=None):
+    "GET a bundle of resources of a specific type in JSON format"
     url=f'{api_base}/{resource_type}'
     if url_suffix is not None:
         url+=url_suffix
+    url+='&' if url_suffix is not None and '?' in url_suffix else '?'
+    url+='_format=json'
     print('GET',url)
     return requests.get(url).json()
 
 # Cell
 def get_next_bundle_as_raw_json(json_response):
     "GET the next set of results"
-    if len(json_response['link']) < 2: return None
-    url = json_response['link'][1]['url']
-    print('GET',url)
-    return requests.get(url).json()
+    for link in json_response['link']:
+        if link['relation'] == 'next':
+            url = link['url']
+            print('GET',url)
+            return requests.get(url).json()
 
 # Cell
 def timestamp_now():
@@ -42,15 +45,18 @@ def extract_references_from_resource(resource, field_name):
     if field_name in resource:
         references = resource[field_name]
         if not isinstance(references, list): references = [references]
-        for r in references:
-            if 'reference' in r:
-                # TODO: check that we have a relative reference or handle other kinds too
-                result.append(r['reference'])
+        for reference in references:
+            _reference = reference.get('reference')
+            if _reference is None: continue
+            if _reference.startswith('#'): continue
+            # TODO: check that we have a relative reference or handle other kinds too
+            result.append(_reference)
     return result
 
 # Cell
 def extract_references(bundle, field_names):
     "Return a list of relative references e.g. `['Condition/1ddef4ad-fb76-46d6-9f1d-8ed58b173ee8']`"
+    if 'entry' not in bundle: return []
     result = []
     for entry in bundle['entry']:
         resource = entry.get('resource', {})
@@ -61,10 +67,17 @@ def extract_references(bundle, field_names):
 # Cell
 def get_by_reference(api_base, reference):
     "Return a resource read from a FHIR server by reference, as a list containg a single bundle entry"
+    if reference.startswith(api_base):
+        reference = reference[len(api_base):].strip('/')
+    if reference.startswith('http'):
+        print(f'WARNING: Found reference {reference} that does not start with {api_base}')
+        return []
     resource_type, id = reference.split('/')
     single_resource_bundle = get_bundle_as_raw_json(api_base, resource_type, f'?_id={id}')
     total = single_resource_bundle['total']
     if total != 1:
-        raise Exception(f'Expected a single resource for {reference} but found {total}')
-        # TODO: we might want to print a warning and return an empyt list if this is too strict
+        print(f'WARNING: Expected a single resource for {reference} but found {total}')
+        return []
+#         raise Exception(f'Expected a single resource for {reference} but found {total}')
+#         # TODO: we might want to print a warning and return an empyt list if this is too strict
     return single_resource_bundle['entry']

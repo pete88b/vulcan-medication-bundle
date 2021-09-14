@@ -15,10 +15,10 @@ def create_single_patient_medication_bundle(api_base, patient_id):
     references = []
     for resource_type, url_suffix in [
             ['Patient', f'?_id={patient_id}'],
-            ['MedicationRequest', f'?subject={patient_id}'],
-            ['MedicationDispense', f'?subject={patient_id}'],
-            ['MedicationAdministration', f'?subject={patient_id}'],
-            ['MedicationStatement', f'?subject={patient_id}']]:
+            ['MedicationRequest', f'?subject=Patient/{patient_id}'],
+            ['MedicationDispense', f'?subject=Patient/{patient_id}'],
+            ['MedicationAdministration', f'?subject=Patient/{patient_id}'],
+            ['MedicationStatement', f'?subject=Patient/{patient_id}']]:
         single_resource_bundle = get_bundle_as_raw_json(api_base, resource_type, url_suffix)
         while single_resource_bundle is not None and single_resource_bundle['total'] > 0:
             result['entry'].extend(single_resource_bundle['entry'])
@@ -29,14 +29,14 @@ def create_single_patient_medication_bundle(api_base, patient_id):
     return result
 
 # Cell
-def save_single_patient_medication_bundle(bundle):
+def save_single_patient_medication_bundle(bundle, output_path='data'):
     "Write a patient medication bundle to file."
-    Path('data').mkdir(exist_ok=True)
+    Path(output_path).mkdir(exist_ok=True)
     patient = bundle['entry'][0]['resource']
     if patient['resourceType'] != 'Patient':
         raise Exception(f'expected a patient but found {patient}')
     patient_id = patient['id']
-    f_name = f'data/patient_medication_bundle_{patient_id}.json'
+    f_name = f'{output_path}/patient_medication_bundle_{patient_id}.json'
     with open(f_name, 'w') as f:
         json.dump(bundle, f, indent=2)
     print('Bundle saved to', f_name)

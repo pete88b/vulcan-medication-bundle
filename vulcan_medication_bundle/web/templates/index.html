@@ -3,28 +3,155 @@
 {% block title %}Demo{% endblock %}
 
 {% block content %}
-  <form action="{{ url_for('demo.index') }}" method="post" autocomplete="off">
+  <p></p>
+  <p>As part of Vulcan - Real World Data (RWD) Submission to FDA,
+  the goal of this page is to show some of the steps needed to convert 
+  FHIR resources to the CDISC "Concomitant/Prior Medications" CM domain;
+    <ul>
+      <li>Create a FHIR bundle of medications for a single patient and</li>
+      <li>Transform a FHIR bundle of medications into SDTM content.</li>
+    </ul>
+  </p>
+  <div>
+    <img src="{{ url_for('static', filename='Demo-Workflow.png') }}" width="100%">
+  </div>
+  <p>
+    If you'd like to see how these services can be used programatically, please see
+    <a href="https://github.com/pete88b/vulcan_medication_bundle/blob/main/10_per_patient.ipynb" 
+       target="_blank">the notebook for the per_patient module of this app</a>.
+  </p>
+  <p>
+  Please note: A complete FHIR to CDISC solution will need additional steps to;
+    <ul>
+      <li>Include FHIR resource like ResearchStudy, ResearchSubject and Immunization,</li>
+      <li>Exclude investigational product,</li>
+      <li>Exclude medications that were taken outside (or after) of study participation ...</li>
+    </ul>
+  </p>
+  <hr>
+  <p>
+    The following servers are listed on 
+    <a href="https://confluence.hl7.org/display/FHIR/Public+Test+Servers" target="_blank">the public test servers HL7 confluence page</a>;
+  </p>
+  <ul>
+    <li>
+      <a href="https://demo1.aha.accenture.com/fhir/r4" target="_blank">https://demo1.aha.accenture.com/fhir/r4</a>
+      sorry ... no search UI available
+      <ul>
+        <li>
+          <a onclick="useExampleValues('https://demo1.aha.accenture.com/fhir/r4', 'o5BSD5q-Boc-320775');">o5BSD5q-Boc-320775</a>
+        </li>
+        <li>
+          <a onclick="useExampleValues('https://demo1.aha.accenture.com/fhir/r4', 'o5BSD5q-Boc-316975');">o5BSD5q-Boc-316975</a>
+        </li>
+        <li>
+          <a onclick="useExampleValues('https://demo1.aha.accenture.com/fhir/r4', 'o5BSD5q-Boc-312666');">o5BSD5q-Boc-312666</a>
+        </li>
+        <li>
+          <a onclick="useExampleValues('https://demo1.aha.accenture.com/fhir/r4', 'o5BSD5q-Boc-265298');">o5BSD5q-Boc-265298</a>
+        </li>
+        <li>
+          <a onclick="useExampleValues('https://demo1.aha.accenture.com/fhir/r4', 'o5BSD5q-Boc-194692');">o5BSD5q-Boc-194692</a>
+        </li>
+        <li>
+          <a onclick="useExampleValues('https://demo1.aha.accenture.com/fhir/r4', 'o5BSD5q-Boc-312666');">o5BSD5q-Boc-312666</a>
+        </li>
+        <li>
+          <a onclick="useExampleValues('https://demo1.aha.accenture.com/fhir/r4', 'o5BSD5q-Boc-176547');">o5BSD5q-Boc-176547</a>
+        </li>
+        <li>
+          <a onclick="useExampleValues('https://demo1.aha.accenture.com/fhir/r4', 'o5BSD5q-Boc-194692');">o5BSD5q-Boc-194692</a>
+        </li>
+        <li>
+          <a onclick="useExampleValues('https://demo1.aha.accenture.com/fhir/r4', 'o5BSD5q-Boc-167068');">o5BSD5q-Boc-167068</a>
+        </li>
+        <li>
+          <a onclick="useExampleValues('https://demo1.aha.accenture.com/fhir/r4', 'o5BSD5q-Boc-167068');">o5BSD5q-Boc-167068</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="https://r4.smarthealthit.org" target="_blank">https://r4.smarthealthit.org</a>
+      <ul>
+        <li>
+          <a onclick="useExampleValues('https://r4.smarthealthit.org/', '28d83205-7289-4483-a25d-877009825909');">28d83205-7289-4483-a25d-877009825909</a>
+        </li>
+        <li>
+          <a onclick="useExampleValues('https://r4.smarthealthit.org/', '1299e4b5-bed9-4574-9233-ddfeb48d5c42');">1299e4b5-bed9-4574-9233-ddfeb48d5c42</a>
+        </li>
+        <li>
+          <a onclick="useExampleValues('https://r4.smarthealthit.org/', '11f2b925-43b2-45e4-ac34-7811a9eb9c1b');">11f2b925-43b2-45e4-ac34-7811a9eb9c1b</a>
+        </li>
+        <li>
+          <a onclick="useExampleValues('https://r4.smarthealthit.org/', 'ede897d1-b0d4-4401-9c8b-45ccf637cbbd');">ede897d1-b0d4-4401-9c8b-45ccf637cbbd</a>
+        </li>
+        <li>
+          <a onclick="useExampleValues('https://r4.smarthealthit.org/', 'd4cdc6d2-f3f1-48c0-96d6-b64b68d79eb9');">d4cdc6d2-f3f1-48c0-96d6-b64b68d79eb9</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="http://hapi.fhir.org/baseR4" target="_blank">http://hapi.fhir.org/baseR4</a>
+      <ul>
+        <li>
+          <a onclick="useExampleValues('http://hapi.fhir.org/baseR4', '0c4a1143-8d1c-42ed-b509-eac97d77c9b2');">0c4a1143-8d1c-42ed-b509-eac97d77c9b2</a>
+        </li>
+        <li>
+          <a onclick="useExampleValues('http://hapi.fhir.org/baseR4', '1b0580b9-1ee3-4353-b555-64c797d57564');">1b0580b9-1ee3-4353-b555-64c797d57564</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="https://server.fire.ly/r4" target="_blank">https://server.fire.ly/r4</a>
+      &larr; click server links to go to search for patients via the server home page
+      <ul>
+        <li>
+          <a onclick="useExampleValues('https://server.fire.ly/r4', 'example');">example</a>
+          &larr; click patient ID links to populate FHIR server and subject &darr;
+        </li>
+      </ul>
+    </li>
+  </ul>
+  <form action="{{ url_for('demo.get_single_patient_medication_bundle') }}" method="post" autocomplete="off">
     <input name="api_base" id="api_base" value="{{ request.form['api_base'] }}"
-           placeholder="Start with a FHIR server URL. e.g. http://hapi.fhir.org/baseR4" required autofocus>
+           placeholder="Start with a FHIR server URL. e.g. http://hapi.fhir.org/baseR4" required>
     <input name="subject" id="subject" value="{{ request.form['subject'] }}"
            placeholder="and a subject (patient ID). e.g. 0c4a1143-8d1c-42ed-b509-eac97d77c9b2" required>
-    <input type="submit" value="Get medication bundle" class="main-submit">
+    <div title="This might fail if FHIR Servers are down or data returned has missing fields etc">
+      <input type="submit" value="Get medication bundle" class="main-submit">
+      &larr; if this fails, please try a different server/patient ID.
+    </div>
   </form>
-  
-  <hr>
-  <article class="post">
-      <header>
-      <div>
-        <h1><a title="Click to edit this entry">p title</a></h1>
-        <div class="about">by blah on blue</div>
-      </div>
-      </header>
-      <p class="body">{{ medication_bundle | safe }}</p>
-  </article>
+  {% if  medication_bundle %}
 
-  <hr>
-  <div class="content-right">
-    <a title="Click to download all posts">Download Posts</a>
-  </div>
+  <p class="medication_bundle">{{ medication_bundle }}</p>
+    <div>
+      To validate this bundle;&nbsp;
+      <a id="openFhirValidator"
+         title="Click to open FHIR validator">Open FHIR validator</a>
+      &nbsp;and paste the automatically copied JSON ...
+    </div>
+
+    <form action="{{ url_for('demo.convert_to_cdisc') }}" method="post" autocomplete="off">
+      <textarea name="medication_bundle" id="medication_bundle" 
+                value="{{ request.form['medication_bundle'] }}" 
+                style="display:none">{{ medication_bundle }}</textarea>
+      <div title='This might fail if we made a mistake building the bundle or the FHIR server gave us "bad" data'>
+        <input type="submit" value="Convert to CDISC" class="main-submit">
+        or&nbsp;
+        <a id="openTransformBundle"
+           title="Click to open FHIR 2 SDTM">Open Transform Bundle</a>
+        &nbsp;and paste the automatically copied JSON ...
+      </div>
+
+    </form>
+
+    {% for table in cdisc_tables %}
+      {{ table|safe }}
+      <p>
+    {% endfor %}
+    
+  {% endif %}
+
   <script src="{{ url_for('static', filename='index.js') }}"></script>
 {% endblock %}
