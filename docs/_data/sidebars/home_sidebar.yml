@@ -16,8 +16,17 @@ entries:
       title: Per-Patient
       url: per_patient.html
     - output: web,pdf
+      title: Status Filter
+      url: status_filter.html
+    - output: web,pdf
+      title: CLI
+      url: cli.html
+    - output: web,pdf
       title: Web App
       url: web_app.html
+    - output: web,pdf
+      title: Web Demo
+      url: web_demo.html
     output: web
     title: vulcan_medication_bundle
   output: web

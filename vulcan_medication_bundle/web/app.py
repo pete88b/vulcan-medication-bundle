@@ -3,7 +3,9 @@
 __all__ = ['get_single_patient_medication_bundle', 'create_app']
 
 # Cell
+from ..core import *
 from ..per_patient import *
+from ..status_filter import *
 from flask import Flask, g, request
 from werkzeug.exceptions import abort
 from pathlib import Path
@@ -13,8 +15,8 @@ import os
 def get_single_patient_medication_bundle(api_base, subject):
     bundle = create_single_patient_medication_bundle(api_base, subject)
     bundle = handle_entry_search(bundle)
-    bundle = filter_bundle(bundle, medication_status_filter)
-    bundle = filter_bundle(bundle, do_not_perform_filter)
+#     bundle = filter_bundle(bundle, medication_status_filter)
+#     bundle = filter_bundle(bundle, do_not_perform_filter)
     return bundle
 
 # Cell
@@ -46,6 +48,10 @@ def create_app(test_config=None):
         if len(args) != 2:
             abort(400, 'Missing URL parameter: api_base and subject are required')
         return get_single_patient_medication_bundle(*args)
+
+    @app.route("/status_filter", methods=['POST'])
+    def _status_filter():
+        return get_negated_list(request.json)
 
     from . import demo
     # apply the blueprints to the app

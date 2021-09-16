@@ -26,8 +26,8 @@ bp = Blueprint("demo", __name__)
 def _get_single_patient_medication_bundle(api_base, subject):
     bundle = create_single_patient_medication_bundle(api_base, subject)
     bundle = handle_entry_search(bundle)
-    bundle = filter_bundle(bundle, medication_status_filter)
-    bundle = filter_bundle(bundle, do_not_perform_filter)
+#     bundle = filter_bundle(bundle, medication_status_filter)
+#     bundle = filter_bundle(bundle, do_not_perform_filter)
     return bundle
 
 # Cell
@@ -39,17 +39,27 @@ def index():
 # Cell
 @bp.route("/get_single_patient_medication_bundle", methods=(["GET", "POST"]))
 def get_single_patient_medication_bundle():
+    # TODO: we have v similar endpoint in app )o:
     medication_bundle = ''
     if request.method == "POST":
         api_base = request.form["api_base"]
         subject = request.form["subject"]
-        print(api_base, subject)
+        headers = request.form["headers"]
+        print(api_base, subject) # DO NOT log headers - might contain user secrets
         error = None
 
         if not api_base:
             error = "api_base is required."
         if not subject:
             error = "subject is required"
+
+        import vulcan_medication_bundle
+        if headers:
+            print('Using custom headers')
+            vulcan_medication_bundle.core.request_headers = json.loads(headers)
+        else:
+            print('no custom headers')
+            vulcan_medication_bundle.core.request_headers = {}
 
         if error is not None:
             flash(error)

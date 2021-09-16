@@ -3,6 +3,9 @@
     "Overview": "/",
     "Core": "core.html",
     "Per-Patient": "per_patient.html",
-    "Web App": "web_app.html"
+    "Status Filter": "status_filter.html",
+    "CLI": "cli.html",
+    "Web App": "web_app.html",
+    "Web Demo": "web_demo.html"
   }
 }

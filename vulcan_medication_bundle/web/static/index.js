@@ -1,13 +1,14 @@
-function useExampleValues(api_base, subject) {
+function useExampleValues(api_base, subject, headers) {
     document.getElementById("api_base").value = api_base;
     document.getElementById("subject").value = subject;
+    document.getElementById("headers").value = (headers) ? headers : '';
 }
 
-function addBundleToClipboardListener(id, url) {
+function addSourceTextToClipboardListener(id, url, source) {
     const element = document.getElementById(id);
     if (element) {
         element.addEventListener('click', () => {
-            const text = document.getElementById("medication_bundle").textContent;
+            const text = document.getElementById(source).textContent;
             navigator.clipboard.writeText(text).then(function() {
                         window.open(url);
                     }, function() {
@@ -18,8 +19,17 @@ function addBundleToClipboardListener(id, url) {
     }
 }
 
-addBundleToClipboardListener("openFhirValidator", "https://inferno.healthit.gov/validator/");
-addBundleToClipboardListener("openTransformBundle", "https://mylinks-prod-sdtmtool.azurewebsites.net/TransformBundle");
+addSourceTextToClipboardListener("openFhirValidator", "https://inferno.healthit.gov/validator/", "medication_bundle");
+addSourceTextToClipboardListener("openFhirValidator2", "https://inferno.healthit.gov/validator/", "statusFilterNegatedList");
+addSourceTextToClipboardListener("openTransformBundle", "https://mylinks-prod-sdtmtool.azurewebsites.net/TransformBundle", "medication_bundle");
+
+function resizeOnInput() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+}
+let textarea=document.getElementById('headers')
+textarea.setAttribute('style', 'height:' + (textarea.scrollHeight) + 'px; overflow-y:hidden;');
+textarea.addEventListener('input', resizeOnInput, false);
 
 if (document.getElementById("convert_to_cdisc")) {
     document.getElementById("convert_to_cdisc").addEventListener('click', () => {
@@ -38,3 +48,26 @@ if (document.getElementById("convert_to_cdisc")) {
     });
 }
 
+function statusFilterStep1() {
+    const bundle = document.getElementById("medication_bundle").textContent;
+    const url = 'status_filter';
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.addEventListener('readystatechange', function(e) {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            document.getElementById("statusFilterStep2").style.display = 'inline';
+            document.getElementById("validateNegatedList").style.display = 'block';
+            const p = document.getElementById("statusFilterNegatedList");
+            p.style.display = 'block';
+            p.innerText = xhr.responseText;
+        } else if (xhr.readyState == 4 && xhr.status != 200) {
+            console.log('status filter step 1 failed ...'); // TODO: proper messages
+        }
+    })
+    xhr.send(bundle);
+}
+
+function statusFilterStep2() {
+    alert("Sorry - we've not done this bit yet");
+}

@@ -8,7 +8,12 @@
   the goal of this page is to show some of the steps needed to convert 
   FHIR resources to the CDISC "Concomitant/Prior Medications" CM domain;
     <ul>
-      <li>Create a FHIR bundle of medications for a single patient and</li>
+      <li>Create a FHIR bundle of medications for a single patient,</li>
+      <li>Filter by status</li>
+      <ul>
+        <li>Get negated medication list via API call</li>
+        <li>Optionally apply negated medication list to bundle</li>
+      </ul>
       <li>Transform a FHIR bundle of medications into SDTM content.</li>
     </ul>
   </p>
@@ -90,6 +95,20 @@
         </li>
       </ul>
     </li>
+
+    
+    <li>
+      <a href="https://connectathon.epic.com/Interconnect-Fhir-Unsecure/api/FHIR/R4" target="_blank">https://connectathon.epic.com/Interconnect-Fhir-Unsecure/api/FHIR/R4</a>
+      <ul>
+        <li>
+          <a onclick="useExampleValues('https://connectathon.epic.com/Interconnect-Fhir-Unsecure/api/FHIR/R4',
+                                       'ezWAKCKmxAtiPb-WU0sKZOQ3', 
+                                       '{&quot;Epic-Client-ID&quot;: &quot;FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00&quot;}');">ezWAKCKmxAtiPb-WU0sKZOQ3</a>
+        </li>
+      </ul>
+    </li>
+
+
     <li>
       <a href="http://hapi.fhir.org/baseR4" target="_blank">http://hapi.fhir.org/baseR4</a>
       <ul>
@@ -117,6 +136,10 @@
            placeholder="Start with a FHIR server URL. e.g. http://hapi.fhir.org/baseR4" required>
     <input name="subject" id="subject" value="{{ request.form['subject'] }}"
            placeholder="and a subject (patient ID). e.g. 0c4a1143-8d1c-42ed-b509-eac97d77c9b2" required>
+    <textarea placeholder='Optional request headers. e.g. {"Epic-Client-ID": "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00"}'
+              name="headers" id="headers" value="{{ request.form['headers'] }}"
+              rows="1"></textarea>
+         
     <div title="This might fail if FHIR Servers are down or data returned has missing fields etc">
       <input type="submit" value="Get medication bundle" class="main-submit">
       &larr; if this fails, please try a different server/patient ID.
@@ -124,13 +147,30 @@
   </form>
   {% if  medication_bundle %}
 
-  <p class="medication_bundle">{{ medication_bundle }}</p>
+  <p class="json_output">{{ medication_bundle }}</p>
     <div>
-      To validate this bundle;&nbsp;
+      To validate this bundle &uarr;;&nbsp;
       <a id="openFhirValidator"
          title="Click to open FHIR validator">Open FHIR validator</a>
       &nbsp;and paste the automatically copied JSON ...
     </div>
+
+    <p>
+      <div>
+        <input type="submit" value="Status filter: Get negated list"
+               class="main-submit" onclick="statusFilterStep1();">
+        <input type="submit" value="Filter bundle &uarr; using negated list &darr;" 
+               class="main-submit" onclick="statusFilterStep2();" 
+               id="statusFilterStep2" style="display:none">
+      </div>
+      <p class="json_output" id="statusFilterNegatedList" style="display:none"></p>
+      <div id="validateNegatedList" style="display:none">
+        To validate this list &uarr;;&nbsp;
+        <a id="openFhirValidator2"
+           title="Click to open FHIR validator">Open FHIR validator</a>
+        &nbsp;and paste the automatically copied JSON ...
+      </div>
+    </p>
 
     <form action="{{ url_for('demo.convert_to_cdisc') }}" method="post" autocomplete="off">
       <textarea name="medication_bundle" id="medication_bundle" 
