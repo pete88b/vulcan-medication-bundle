@@ -183,7 +183,11 @@
            title="Click to open FHIR 2 SDTM">Open Transform Bundle</a>
         &nbsp;and paste the automatically copied JSON ...
       </div>
-
+      <div>&uarr; "Convert to CDISC" and "Open Transform Bundle" are failing as they rely on 
+        <a href="https://mylinks-prod-sdtmtool.azurewebsites.net/TransformBundle/Process">
+        https://mylinks-prod-sdtmtool.azurewebsites.net/TransformBundle/Process</a>
+        which has been unavaialble since late 2021.
+      </div>
     </form>
 
     {% for table in cdisc_tables %}
